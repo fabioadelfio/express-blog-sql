@@ -8,7 +8,7 @@ const index = (req, res) => {
         if (err) return res.status(500).json({ error: `Database query failed` });
         res.json(results);
     });
-    
+
     // const filterTag = req.query.tags;
 
     // let filteredPosts = posts;
@@ -143,6 +143,17 @@ const modify = (req, res) => {
 }
 
 const destroy = (req, res) => {
+
+    const postId = req.params.id;
+
+    connection.query(`DELETE FROM posts WHERE id = ?`, [postId], (err, results) => {
+        if(err) return res.status(500).json({ error: `Failed to delete post` });
+        res.sendStatus(204);
+    })
+
+
+
+
     // const id = parseInt(req.params.id);
 
     // const post = posts.find(p => p.id === id);

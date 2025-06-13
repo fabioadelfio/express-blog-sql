@@ -24,12 +24,51 @@ const index = (req, res) => {
 const show = (req, res) => {
 
     const postId = req.params.id;
-    const sql = `SELECT * FROM posts WHERE id = ?`;
+    const sql = 
+        `
+            SELECT 
+                posts.id AS post_id,
+                posts.title,
+                posts.content, 
+                posts.image,
+                tags.id AS tag_id,
+                tags.label 
+            FROM posts 
+
+            INNER JOIN post_tag
+            ON posts.id = post_tag.post_id
+
+            INNER JOIN tags
+            ON post_tag.tag_id = tags.id
+            
+            WHERE posts.id = ?
+        `;
 
     connection.query(sql, [postId], (err, results) => {
-        if (err) return res.status(500).json({ error: `Database query Failed` });
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ error: `Database query Failed` })
+        };
         if(results.length === 0) return res.status(404).json({ error: `Pizza not found` });
-        res.json(results[0]);
+        
+        const row = results[0];
+        const tags = [];
+
+        results.forEach(r => {
+            if (r.tag_id && r.label) {
+                tags.push(r.label);
+            }
+        })
+
+        const post = {
+            post_id: row.post_id,
+            title: row.title,
+            content: row.content,
+            image: row.image,
+            tags: tags.join(`, `)
+        };
+
+        res.json(post);
     });
 
 

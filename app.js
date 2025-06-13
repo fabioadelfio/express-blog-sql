@@ -1,6 +1,5 @@
 const express = require(`express`);
 const app = express();
-const db = require(`./data/db`);
 const postsRouter = require('./routers/posts');
 
 
@@ -25,6 +24,6 @@ app.use(notFound);
 const errorHandler = require(`./middlewares/errorHandler`);
 app.use(errorHandler);
 
-app.listen(3306, () => {
-    console.log(`Server listening...`);
+app.listen(3000, () => {
+    console.log(`Server listening on http://localhost:3000`);
 });
